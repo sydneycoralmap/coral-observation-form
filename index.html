@@ -1,101 +1,44 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Coral Observation Form</title>
-  <style>
-    #map {
-      height: 400px;
-      width: 100%;
-    }
-  </style>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbEzF28GNN7m__ATOuUh3CtGADyAM2VDE
-"></script>
-</head>
-<body>
-  <h1>Submit a Coral Observation</h1>
-  <div id="map"></div>
-  <form id="observationForm">
-    <label for="species">Species Name:</label><br>
-    <input type="text" id="species" name="species" required><br><br>
+  <head>
+    <style>
+      html, body, #map {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
+  </head>
+  <body>
+    <div id="map"></div>
 
-    <label for="observer">Observer Name:</label><br>
-    <input type="text" id="observer" name="observer" required><br><br>
+    <script>
+      let map;
+      let marker;
 
-    <label for="latitude">Latitude:</label><br>
-    <input type="text" id="latitude" name="latitude" required><br><br>
-
-    <label for="longitude">Longitude:</label><br>
-    <input type="text" id="longitude" name="longitude" required><br><br>
-
-    <label for="notes">Notes:</label><br>
-    <textarea id="notes" name="notes"></textarea><br><br>
-
-    <label for="photoUrl">Photo URL:</label><br>
-    <input type="url" id="photoUrl" name="photoUrl"><br><br>
-
-    <input type="submit" value="Submit Observation">
-  </form>
-
-  <script>
-    let map;
-    let marker;
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: -33.865, lng: 151.209 },
-        zoom: 10,
-      });
-
-      map.addListener("click", (e) => {
-        const lat = e.latLng.lat();
-        const lng = e.latLng.lng();
-
-        if (marker) marker.setMap(null);
-        marker = new google.maps.Marker({
-          position: { lat, lng },
-          map: map,
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: -33.865, lng: 151.209 },
+          zoom: 10,
         });
 
-        document.getElementById("latitude").value = lat;
-        document.getElementById("longitude").value = lng;
-      });
-    }
+        map.addListener("click", (e) => {
+          const lat = e.latLng.lat();
+          const lng = e.latLng.lng();
 
-    window.onload = initMap;
-
-    document.getElementById("observationForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-
-      const data = {
-        species: document.getElementById("species").value,
-        observer: document.getElementById("observer").value,
-        latitude: document.getElementById("latitude").value,
-        longitude: document.getElementById("longitude").value,
-        notes: document.getElementById("notes").value,
-        photoUrl: document.getElementById("photoUrl").value
-      };
-
-      fetch("https://script.google.com/macros/s/AKfycbyHw03oNe6pspnNNTuK_QRFaG2TD8lSwbOZCfkZ3zuzDKC81vmx6QCKIVh-6vUue5sXIw/exec", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-      .then(response => response.json())
-      .then(result => {
-        if (result.result === "success") {
-          alert("Observation submitted successfully!");
-          document.getElementById("observationForm").reset();
           if (marker) marker.setMap(null);
-        } else {
-          alert("Error submitting observation: " + result.error);
-        }
-      })
-      .catch(error => {
-        alert("Error submitting observation: " + error.message);
-      });
-    });
-  </script>
-</body>
+          marker = new google.maps.Marker({
+            position: { lat, lng },
+            map: map,
+          });
+
+          // Send coordinates to the parent Wix page
+          window.parent.postMessage({ lat, lng }, "*");
+        });
+      }
+
+      window.onload = initMap;
+    </script>
+  </body>
 </html>
