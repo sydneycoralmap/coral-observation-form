@@ -1,165 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sydney Coral Observation</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Coral Observation Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
-      font-family: 'Inter', sans-serif;
-      background: #f4f8fb;
-      color: #333;
-      margin: 0;
-      padding: 2em;
-      display: flex;
-      justify-content: center;
-    }
-    .container {
-      background: #fff;
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 1rem;
+      background: #f0f8ff;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-      padding: 2em;
-      max-width: 700px;
-      width: 100%;
-    }
-    h1 {
-      font-size: 1.5em;
-      margin-bottom: 1em;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
     label {
       display: block;
-      margin-top: 1em;
-      font-weight: 600;
+      margin-top: 1rem;
     }
-    input, textarea {
+    input, textarea, select, button {
       width: 100%;
-      padding: 0.75em;
-      margin-top: 0.25em;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 1em;
-    }
-    textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-    #map {
-      width: 100%;
-      height: 300px;
-      margin-top: 1em;
-      border-radius: 6px;
+      padding: 0.5rem;
+      margin-top: 0.3rem;
+      border-radius: 5px;
       border: 1px solid #ccc;
     }
     button {
-      margin-top: 2em;
-      padding: 0.75em 1.5em;
       background-color: #0077cc;
       color: white;
-      font-size: 1em;
-      border: none;
-      border-radius: 6px;
+      font-weight: bold;
+      margin-top: 1rem;
       cursor: pointer;
     }
     button:hover {
       background-color: #005fa3;
     }
   </style>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAbEzF28GNN7m__ATOuUh3CtGADyAM2VDE"></script>
 </head>
 <body>
-  <div class="container">
-    <h1>Submit a Coral Observation</h1>
-    <form id="coralForm">
-      <label for="observer">Your Name</label>
-      <input type="text" id="observer" name="observer" required>
 
-      <label for="species">Species Name (if known)</label>
-      <input type="text" id="species" name="species">
+  <h1>Submit Coral Observation</h1>
 
-      <label for="notes">Notes</label>
-      <textarea id="notes" name="notes"></textarea>
+  <form id="coral-form">
+    <label for="species">Species</label>
+    <input type="text" id="species" name="species" required>
 
-      <label for="latitude">Latitude</label>
-      <input type="text" id="latitude" name="latitude" placeholder="Click on the map or enter manually" required>
+    <label for="observer">Observer Name</label>
+    <input type="text" id="observer" name="observer" required>
 
-      <label for="longitude">Longitude</label>
-      <input type="text" id="longitude" name="longitude" placeholder="Click on the map or enter manually" required>
+    <label for="latitude">Latitude</label>
+    <input type="text" id="latitude" name="latitude" required>
 
-      <label for="photoUrl">Photo URL (optional)</label>
-      <input type="text" id="photoUrl" name="photoUrl">
+    <label for="longitude">Longitude</label>
+    <input type="text" id="longitude" name="longitude" required>
 
-      <div id="map"></div>
+    <label for="notes">Notes</label>
+    <textarea id="notes" name="notes" rows="4"></textarea>
 
-      <button type="submit">Submit Observation</button>
-    </form>
-  </div>
+    <button type="submit">Submit</button>
+  </form>
 
   <script>
-    let map, marker;
-
-    function initMap() {
-      map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: -33.865, lng: 151.209 },
-        zoom: 10,
-      });
-
-      map.addListener("click", (e) => {
-        const lat = e.latLng.lat();
-        const lng = e.latLng.lng();
-
-        document.getElementById("latitude").value = lat.toFixed(6);
-        document.getElementById("longitude").value = lng.toFixed(6);
-
-        if (marker) {
-          marker.setPosition({ lat, lng });
-        } else {
-          marker = new google.maps.Marker({
-            position: { lat, lng },
-            map: map,
-          });
-        }
-      });
-    }
-
-    window.onload = initMap;
-
-    document.getElementById("coralForm").addEventListener("submit", async (e) => {
+    document.getElementById("coral-form").addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const payload = {
-        observer: document.getElementById("observer").value,
-        species: document.getElementById("species").value,
-        notes: document.getElementById("notes").value,
-        latitude: document.getElementById("latitude").value,
-        longitude: document.getElementById("longitude").value,
-        photoUrl: document.getElementById("photoUrl").value,
-      };
+      const formData = new URLSearchParams();
+      formData.append("species", document.getElementById("species").value);
+      formData.append("observer", document.getElementById("observer").value);
+      formData.append("latitude", document.getElementById("latitude").value);
+      formData.append("longitude", document.getElementById("longitude").value);
+      formData.append("notes", document.getElementById("notes").value);
 
-      try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbxadb6_JngtAT_WdaBiFWpwNwL-zRuONETT9JwYmZ9uEXuoO3VNGqMSL9VcAZKIpxQr2w/exec", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+      fetch("https://script.google.com/macros/s/AKfycbwxxKkYAzjK9wKJilYiwdBWRLFs3tdLUe3bqqgiPjfo1vGBqUoh38HuJu4Nop8xvwGZCA/exec", {
+        method: "POST",
+        body: formData,
+        mode: "no-cors"
+      })
+        .then(() => {
+          alert("✅ Observation submitted!");
+          document.getElementById("coral-form").reset();
+        })
+        .catch((error) => {
+          console.error("❌ Submission failed:", error);
+          alert("Could not submit. Try again later.");
         });
-
-        const result = await response.json();
-        if (result.result === "success") {
-          alert("✅ Observation submitted successfully!");
-          document.getElementById("coralForm").reset();
-          if (marker) marker.setMap(null);
-          marker = null;
-        } else {
-          alert("⚠️ Submission failed. Please try again.");
-        }
-      } catch (err) {
-        console.error("❌ Network error:", err);
-        alert("❌ Could not submit. Check your connection or try again later.");
-      }
     });
   </script>
+
 </body>
 </html>
