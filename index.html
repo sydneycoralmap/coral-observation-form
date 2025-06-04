@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="utf-8" />
+    <title>Coral Observation Map</title>
     <style>
       html, body, #map {
         height: 100%;
@@ -8,7 +10,8 @@
         padding: 0;
       }
     </style>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLIyXdY5Ff3-kOHG-ARK-GU6IdA2BZabA"></script>
+    <!-- Replace YOUR_API_KEY below with your actual key -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY"></script>
   </head>
   <body>
     <div id="map"></div>
@@ -19,7 +22,7 @@
 
       function initMap() {
         map = new google.maps.Map(document.getElementById("map"), {
-          center: { lat: -33.865, lng: 151.209 },
+          center: { lat: -33.865, lng: 151.209 }, // Sydney
           zoom: 10,
         });
 
@@ -27,14 +30,20 @@
           const lat = e.latLng.lat();
           const lng = e.latLng.lng();
 
-          if (marker) marker.setMap(null);
-          marker = new google.maps.Marker({
-            position: { lat, lng },
-            map: map,
-          });
+          console.log("📤 Sending lat/lng to parent:", lat, lng);
 
-          // Send coordinates to the parent Wix page
+          // Send lat/lng to parent Wix page
           window.parent.postMessage({ lat, lng }, "*");
+
+          // Drop or move pin
+          if (marker) {
+            marker.setPosition({ lat, lng });
+          } else {
+            marker = new google.maps.Marker({
+              position: { lat, lng },
+              map: map,
+            });
+          }
         });
       }
 
