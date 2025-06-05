@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,9 +56,16 @@
       width: 100%;
       height: 600px;
     }
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
+
+  <header>
+    <h1>SYDNEY CORAL MAP</h1>
+  </header>
 
   <div class="container">
     <div class="form-container">
@@ -68,20 +76,26 @@
         <label for="area">Area</label>
         <input type="text" id="area" name="area" required />
 
-        <label for="species">Species</label>
-        <input type="text" id="species" name="species" required />
-
-        <label for="notes">Notes</label>
-        <textarea id="notes" name="notes" rows="4"></textarea>
-
         <label for="lat">Latitude</label>
         <input type="text" id="lat" name="latitude" readonly required />
 
         <label for="lng">Longitude</label>
         <input type="text" id="lng" name="longitude" readonly required />
 
-        <label for="photo">Photo Upload</label>
-        <input type="file" id="photo" name="photo" accept="image/*" required />
+        <label>Did you see any corals?</label>
+        <label><input type="radio" name="coral_seen" value="Y" required /> Yes</label>
+        <label><input type="radio" name="coral_seen" value="N" /> No</label>
+
+        <div id="coralDetails" class="hidden">
+          <label for="species">Species</label>
+          <input type="text" id="species" name="species" />
+
+          <label for="notes">Notes</label>
+          <textarea id="notes" name="notes" rows="4"></textarea>
+
+          <label for="photo">Photo Upload</label>
+          <input type="file" id="photo" name="photo" accept="image/*" />
+        </div>
 
         <button type="submit">Submit Observation</button>
       </form>
@@ -112,29 +126,44 @@
       }
     });
 
+    const coralInputs = document.getElementsByName("coral_seen");
+    coralInputs.forEach(radio => {
+      radio.addEventListener('change', function() {
+        const details = document.getElementById('coralDetails');
+        if (this.value === 'Y') {
+          details.classList.remove('hidden');
+          document.getElementById('photo').required = true;
+        } else {
+          details.classList.add('hidden');
+          document.getElementById('photo').required = false;
+        }
+      });
+    });
+
     document.getElementById('observationForm').addEventListener('submit', function(e) {
       e.preventDefault();
-
       const form = e.target;
+      const coralSeen = document.querySelector('input[name="coral_seen"]:checked').value;
       const fileInput = document.getElementById("photo");
       const file = fileInput.files[0];
 
       const reader = new FileReader();
       reader.onloadend = async function () {
-        const base64String = reader.result.split(",")[1]; // remove "data:image/...;base64,"
-
+        const base64String = file ? reader.result.split(",")[1] : "";
         const formData = new FormData();
         formData.append("observer", document.getElementById("observer").value);
         formData.append("area", document.getElementById("area").value);
-        formData.append("species", document.getElementById("species").value);
-        formData.append("notes", document.getElementById("notes").value);
         formData.append("latitude", document.getElementById("lat").value);
         formData.append("longitude", document.getElementById("lng").value);
-        formData.append("photo", base64String);
-        formData.append("photoContentType", file.type);
+        formData.append("coral_observed", coralSeen);
+        formData.append("species", document.getElementById("species").value);
+        formData.append("notes", document.getElementById("notes").value);
+        if (file) {
+          formData.append("photo", base64String);
+          formData.append("photoContentType", file.type);
+        }
 
-  const res = await fetch("https://script.google.com/macros/s/AKfycbzlef74xtGVdSYncgfHUE6tsGGuiTA7GxUOhSs9p0DuDSq9pDrqxjWAvuFddlij8w11-w/exec", {
-
+        const res = await fetch("https://script.google.com/macros/s/AKfycbzlef74xtGVdSYncgfHUE6tsGGuiTA7GxUOhSs9p0DuDSq9pDrqxjWAvuFddlij8w11-w/exec", {
           method: "POST",
           body: formData
         });
@@ -142,12 +171,17 @@
         if (res.ok) {
           alert("✅ Observation submitted!");
           form.reset();
+          document.getElementById("coralDetails").classList.add("hidden");
           if (marker) map.removeLayer(marker);
         } else {
           alert("❌ Submission failed.");
         }
       };
-      reader.readAsDataURL(file); // trigger reader.onloadend
+      if (file) {
+        reader.readAsDataURL(file);
+      } else {
+        reader.onloadend();
+      }
     });
   </script>
 
