@@ -124,7 +124,7 @@
       const formData = new FormData(form);
       formData.append("photo", photo);
 
-      const res = await fetch("YOUR_DEPLOYED_WEB_APP_URL", {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbw8B9k7f_EW3N_5fUlIy2LbYLm1SomaFpuPgqMZOq1zoPe-Vu9Cld4u7ev1kqPM1B3c_Q/exec", {
         method: "POST",
         body: formData
       });
