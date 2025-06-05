@@ -3270,3 +3270,54 @@
 				}
 
 		}
+
+
+/* === CUSTOM MODIFICATIONS START === */
+
+/* Change header bar to navy */
+#header {
+  background-color: #001f3f; /* navy blue */
+}
+
+/* Layout adjustment for form and map */
+#observation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+#observation .form-container {
+  flex: 1 1 40%;
+  min-width: 300px;
+}
+
+#observation .map-container {
+  flex: 1 1 40%;
+  min-width: 300px;
+  height: 700px; /* Match form height visually */
+}
+
+/* Ensure map fills its container */
+#map {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+/* Optional: improve form appearance */
+#observationForm label {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+#observationForm input,
+#observationForm textarea,
+#observationForm select,
+#observationForm button {
+  margin-bottom: 1rem;
+}
+
+/* === CUSTOM MODIFICATIONS END === */
