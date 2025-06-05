@@ -82,9 +82,11 @@
         <label for="lng">Longitude</label>
         <input type="text" id="lng" name="longitude" readonly required />
 
-        <label>Did you see any corals?</label>
-        <label><input type="radio" name="coral_seen" value="Y" required /> Yes</label>
-        <label><input type="radio" name="coral_seen" value="N" /> No</label>
+<label>Did you see a coral?</label>
+<div>
+  <label><input type="radio" name="coral_observed" value="yes" required /> Yes</label>
+  <label><input type="radio" name="coral_observed" value="no" /> No</label>
+</div>
 
         <div id="coralDetails" class="hidden">
           <label for="species">Species</label>
@@ -140,49 +142,54 @@
       });
     });
 
-    document.getElementById('observationForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const form = e.target;
-      const coralSeen = document.querySelector('input[name="coral_seen"]:checked').value;
-      const fileInput = document.getElementById("photo");
-      const file = fileInput.files[0];
+document.getElementById('observationForm').addEventListener('submit', function(e) {
+  e.preventDefault();
 
-      const reader = new FileReader();
-      reader.onloadend = async function () {
-        const base64String = file ? reader.result.split(",")[1] : "";
-        const formData = new FormData();
-        formData.append("observer", document.getElementById("observer").value);
-        formData.append("area", document.getElementById("area").value);
-        formData.append("latitude", document.getElementById("lat").value);
-        formData.append("longitude", document.getElementById("lng").value);
-        formData.append("coral_observed", coralSeen);
-        formData.append("species", document.getElementById("species").value);
-        formData.append("notes", document.getElementById("notes").value);
-        if (file) {
-          formData.append("photo", base64String);
-          formData.append("photoContentType", file.type);
-        }
+  const form = e.target;
+  const fileInput = document.getElementById("photo");
+  const file = fileInput.files[0];
 
-        const res = await fetch("https://script.google.com/macros/s/AKfycbxiNys2dYjTw0bKU9PMw6pTwIjWRId5DmccS2yQLWsQd5MXHsbYzsvhCfBlp5qOzZUcpQ/exec", {
-          method: "POST",
-          body: formData
-        });
+  const coralObserved = document.querySelector('input[name="coral_observed"]:checked')?.value || "no";
 
-        if (res.ok) {
-          alert("✅ Observation submitted!");
-          form.reset();
-          document.getElementById("coralDetails").classList.add("hidden");
-          if (marker) map.removeLayer(marker);
-        } else {
-          alert("❌ Submission failed.");
-        }
-      };
-      if (file) {
-        reader.readAsDataURL(file);
-      } else {
-        reader.onloadend();
-      }
+  const reader = new FileReader();
+  reader.onloadend = async function () {
+    const base64String = reader.result?.split(",")[1] || "";
+
+    const formData = new FormData();
+    formData.append("observer", document.getElementById("observer").value);
+    formData.append("area", document.getElementById("area").value);
+    formData.append("species", document.getElementById("species").value);
+    formData.append("notes", document.getElementById("notes").value);
+    formData.append("latitude", document.getElementById("lat").value);
+    formData.append("longitude", document.getElementById("lng").value);
+    formData.append("photo", base64String);
+    formData.append("photoContentType", file?.type || "");
+    formData.append("coral_observed", coralObserved);
+
+    const res = await fetch("YOUR_WEB_APP_URL_HERE", {
+      method: "POST",
+      body: formData
     });
+
+    if (res.ok) {
+      alert("✅ Observation submitted!");
+      form.reset();
+      if (marker) map.removeLayer(marker);
+    } else {
+      alert("❌ Submission failed.");
+    }
+  };
+
+  // Only read file if coral was seen (and file exists)
+  if (coralObserved === "yes" && file) {
+    reader.readAsDataURL(file);
+  } else {
+    // Skip photo encoding if no photo is needed
+    reader.onloadend();
+    reader.readAsDataURL(new Blob([""])); // Dummy to trigger onloadend
+  }
+});
+
   </script>
 
 </body>
