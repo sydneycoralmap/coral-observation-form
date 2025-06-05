@@ -133,8 +133,8 @@
         formData.append("photo", base64String);
         formData.append("photoContentType", file.type);
 
-        const res = await fetch("https://script.google.com/macros/s/AKfycbzlef74xtGVdSYncgfHUE6tsGGuiTA7GxUOhSs9p0DuDSq9pDrqxjWAvuFddlij8w11-w/exec
-", {
+  const res = await fetch("https://script.google.com/macros/s/AKfycbzlef74xtGVdSYncgfHUE6tsGGuiTA7GxUOhSs9p0DuDSq9pDrqxjWAvuFddlij8w11-w/exec", {
+
           method: "POST",
           body: formData
         });
