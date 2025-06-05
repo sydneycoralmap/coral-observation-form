@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -82,11 +81,11 @@
         <label for="lng">Longitude</label>
         <input type="text" id="lng" name="longitude" readonly required />
 
-<label>Did you see a coral?</label>
-<div>
-  <label><input type="radio" name="coral_observed" value="yes" required /> Yes</label>
-  <label><input type="radio" name="coral_observed" value="no" /> No</label>
-</div>
+        <label>Did you see a coral?</label>
+        <div>
+          <label><input type="radio" name="coral_observed" value="yes" required /> Yes</label>
+          <label><input type="radio" name="coral_observed" value="no" /> No</label>
+        </div>
 
         <div id="coralDetails" class="hidden">
           <label for="species">Species</label>
@@ -128,68 +127,62 @@
       }
     });
 
-    const coralInputs = document.getElementsByName("coral_seen");
-    coralInputs.forEach(radio => {
-      radio.addEventListener('change', function() {
-        const details = document.getElementById('coralDetails');
-        if (this.value === 'Y') {
-          details.classList.remove('hidden');
-          document.getElementById('photo').required = true;
-        } else {
-          details.classList.add('hidden');
-          document.getElementById('photo').required = false;
+    document.querySelectorAll('input[name="coral_observed"]').forEach(radio => {
+      radio.addEventListener('change', function () {
+        const show = this.value === 'yes';
+        const details = document.getElementById("coralDetails");
+        details.classList.toggle("hidden", !show);
+        document.getElementById("photo").required = show;
+        if (!show) {
+          document.getElementById("species").value = "";
+          document.getElementById("notes").value = "";
+          document.getElementById("photo").value = "";
         }
       });
     });
 
-document.getElementById('observationForm').addEventListener('submit', function(e) {
-  e.preventDefault();
+    document.getElementById('observationForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const fileInput = document.getElementById("photo");
+      const file = fileInput.files[0];
+      const coralObserved = document.querySelector('input[name="coral_observed"]:checked')?.value || "no";
 
-  const form = e.target;
-  const fileInput = document.getElementById("photo");
-  const file = fileInput.files[0];
+      const reader = new FileReader();
+      reader.onloadend = async function () {
+        const base64String = reader.result?.split(",")[1] || "";
+        const formData = new FormData();
+        formData.append("observer", document.getElementById("observer").value);
+        formData.append("area", document.getElementById("area").value);
+        formData.append("species", document.getElementById("species").value);
+        formData.append("notes", document.getElementById("notes").value);
+        formData.append("latitude", document.getElementById("lat").value);
+        formData.append("longitude", document.getElementById("lng").value);
+        formData.append("photo", base64String);
+        formData.append("photoContentType", file?.type || "");
+        formData.append("coral_observed", coralObserved);
 
-  const coralObserved = document.querySelector('input[name="coral_observed"]:checked')?.value || "no";
+        const res = await fetch("YOUR_WEB_APP_URL_HERE", {
+          method: "POST",
+          body: formData
+        });
 
-  const reader = new FileReader();
-  reader.onloadend = async function () {
-    const base64String = reader.result?.split(",")[1] || "";
+        if (res.ok) {
+          alert("✅ Observation submitted!");
+          form.reset();
+          if (marker) map.removeLayer(marker);
+        } else {
+          alert("❌ Submission failed.");
+        }
+      };
 
-    const formData = new FormData();
-    formData.append("observer", document.getElementById("observer").value);
-    formData.append("area", document.getElementById("area").value);
-    formData.append("species", document.getElementById("species").value);
-    formData.append("notes", document.getElementById("notes").value);
-    formData.append("latitude", document.getElementById("lat").value);
-    formData.append("longitude", document.getElementById("lng").value);
-    formData.append("photo", base64String);
-    formData.append("photoContentType", file?.type || "");
-    formData.append("coral_observed", coralObserved);
-
-    const res = await fetch("YOUR_WEB_APP_URL_HERE", {
-      method: "POST",
-      body: formData
+      if (coralObserved === "yes" && file) {
+        reader.readAsDataURL(file);
+      } else {
+        reader.onloadend();
+        reader.readAsDataURL(new Blob([""]));
+      }
     });
-
-    if (res.ok) {
-      alert("✅ Observation submitted!");
-      form.reset();
-      if (marker) map.removeLayer(marker);
-    } else {
-      alert("❌ Submission failed.");
-    }
-  };
-
-  // Only read file if coral was seen (and file exists)
-  if (coralObserved === "yes" && file) {
-    reader.readAsDataURL(file);
-  } else {
-    // Skip photo encoding if no photo is needed
-    reader.onloadend();
-    reader.readAsDataURL(new Blob([""])); // Dummy to trigger onloadend
-  }
-});
-
   </script>
 
 </body>
