@@ -1,126 +1,155 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>Coral Observations</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="assets/css/main.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-    <style>
-        #map { height: 600px; }
-        label { display: block; margin-top: 10px; font-weight: bold; }
-        input, textarea, button {
-            width: 100%;
-            padding: 8px;
-            margin-top: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #0077b6;
-            color: white;
-            border: none;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-        button:hover { background-color: #005f87; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Submit a Coral Observation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      margin: 0;
+      height: 100vh;
+    }
+    .left-panel, .right-panel {
+      width: 50%;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    form label {
+      display: block;
+      margin-top: 10px;
+    }
+    form input, form textarea, form button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 4px;
+    }
+    form button {
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    form button:hover {
+      background-color: #005fa3;
+    }
+    #map {
+      height: 100%;
+    }
+  </style>
 </head>
-<body class="is-preload">
+<body>
 
-    <!-- Header -->
-    <header id="header" style="background-color: #002244;">
-        <h1 style="color:white; margin-left: 1em;">MAPPING SYDNEY'S CORALS</h1>
-    </header>
+<div class="left-panel">
+  <form id="observationForm">
+    <label for="area">Area</label>
+    <input type="text" id="area" name="area" required>
 
-    <!-- Main -->
-    <section id="main" class="wrapper">
-        <div class="inner" style="display: flex; gap: 2rem; flex-wrap: wrap;">
-            <!-- Form -->
-            <div style="flex: 1; min-width: 300px;">
-                <form id="observationForm">
-                    <h3>Let us know whether you did or didn't see corals where you swam!</h3>
+    <label for="species">Species</label>
+    <input type="text" id="species" name="species" required>
 
-                    <label for="area">Area</label>
-                    <input type="text" id="area" name="data[area]" required>
+    <label for="observer">Observer</label>
+    <input type="text" id="observer" name="observer" required>
 
-                    <label for="species">Species Observed</label>
-                    <input type="text" id="species" name="data[species]" required>
+    <label for="notes">Notes</label>
+    <textarea id="notes" name="notes" rows="4"></textarea>
 
-                    <label for="observer">Observer Name</label>
-                    <input type="text" id="observer" name="data[observer]">
+    <label for="latitude">Latitude</label>
+    <input type="text" id="latitude" name="latitude" readonly required>
 
-                    <label for="notes">Notes</label>
-                    <textarea id="notes" name="data[notes]" rows="4"></textarea>
+    <label for="longitude">Longitude</label>
+    <input type="text" id="longitude" name="longitude" readonly required>
 
-                    <label for="photo">Photo Upload</label>
-                    <input type="file" id="photo" name="data[photo]" accept="image/*">
+    <label for="photo">Upload a Photo</label>
+    <input type="file" id="photo" name="photo" accept="image/*">
 
-                    <label for="lat">Latitude</label>
-                    <input type="text" id="lat" name="data[latitude]" readonly required>
+    <button type="submit">Submit Observation</button>
+  </form>
+</div>
 
-                    <label for="lng">Longitude</label>
-                    <input type="text" id="lng" name="data[longitude]" readonly required>
+<div class="right-panel">
+  <div id="map"></div>
+</div>
 
-                    <button type="submit">Submit Observation</button>
-                </form>
-            </div>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script>
+  // Initialize map
+  const map = L.map('map').setView([-33.85, 151.2], 10);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
 
-            <!-- Map -->
-            <div style="flex: 1; min-width: 300px;">
-                <div id="map"></div>
-            </div>
-        </div>
-    </section>
+  let marker;
+  map.on('click', function(e) {
+    const lat = e.latlng.lat.toFixed(6);
+    const lng = e.latlng.lng.toFixed(6);
+    document.getElementById('latitude').value = lat;
+    document.getElementById('longitude').value = lng;
 
-    <!-- Scripts -->
-    <script src="assets/js/jquery.min.js"></script>
-    <script src="assets/js/browser.min.js"></script>
-    <script src="assets/js/breakpoints.min.js"></script>
-    <script src="assets/js/util.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    if (marker) {
+      marker.setLatLng(e.latlng);
+    } else {
+      marker = L.marker(e.latlng).addTo(map);
+    }
+  });
 
-    <script>
-        // Initialize map
-        const map = L.map('map').setView([-33.85, 151.2], 10);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+  // Submit handler
+  document.getElementById('observationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-        // Marker drop
-        let marker;
-        map.on('click', function (e) {
-            const lat = e.latlng.lat.toFixed(6);
-            const lng = e.latlng.lng.toFixed(6);
-            document.getElementById('lat').value = lat;
-            document.getElementById('lng').value = lng;
+    const area = document.getElementById('area').value;
+    const species = document.getElementById('species').value;
+    const observer = document.getElementById('observer').value;
+    const notes = document.getElementById('notes').value;
+    const latitude = document.getElementById('latitude').value;
+    const longitude = document.getElementById('longitude').value;
+    const photoFile = document.getElementById('photo').files[0];
 
-            if (marker) {
-                marker.setLatLng(e.latlng);
-            } else {
-                marker = L.marker(e.latlng).addTo(map);
-            }
-        });
+    const reader = new FileReader();
+    reader.onload = function() {
+      const base64 = reader.result.split(',')[1];
+      const payload = {
+        area,
+        species,
+        observer,
+        notes,
+        latitude,
+        longitude,
+        photoName: photoFile ? photoFile.name : null,
+        photoBase64: photoFile ? base64 : null
+      };
 
-        // Handle form submit
-        document.getElementById('observationForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-            const formData = new FormData(e.target);
+      fetch('https://script.google.com/macros/s/AKfycbyvkqyjtDKpqz3nGjs58pEJ9gCoP0cwtIE16PgI3nK1hI6O4hDNs7NHu6TnesUdPI6bpg/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          alert('✅ Observation submitted! Observation ID: ' + data.id);
+          document.getElementById('observationForm').reset();
+          if (marker) map.removeLayer(marker);
+        } else {
+          alert('❌ Error: ' + data.error);
+        }
+      })
+      .catch(error => {
+        alert('❌ Network error: ' + error.message);
+      });
+    };
 
-            fetch("https://sheetdb.io/api/v1/qv8axipdm0sak", {
-                method: "POST",
-                body: formData
-            }).then(res => {
-                if (res.ok) {
-                    alert("✅ Submitted!");
-                    e.target.reset();
-                    if (marker) map.removeLayer(marker);
-                } else {
-                    alert("❌ Submission failed.");
-                }
-            }).catch(() => alert("❌ Network error."));
-        });
-    </script>
+    if (photoFile) {
+      reader.readAsDataURL(photoFile);
+    } else {
+      reader.onload();
+    }
+  });
+</script>
+
 </body>
 </html>
