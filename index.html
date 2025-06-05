@@ -1,155 +1,143 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Submit a Coral Observation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coral Observation</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      display: flex;
       margin: 0;
-      height: 100vh;
+      font-family: "Open Sans", sans-serif;
+      background: #f8f9fa;
     }
-    .left-panel, .right-panel {
-      width: 50%;
+    header {
+      background: #0d1b2a;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 20px;
+    }
+    .form-container, .map-container {
+      flex: 1;
+      min-width: 300px;
       padding: 20px;
       box-sizing: border-box;
     }
-    form label {
-      display: block;
-      margin-top: 10px;
+    form {
+      display: flex;
+      flex-direction: column;
     }
-    form input, form textarea, form button {
-      width: 100%;
-      padding: 8px;
-      margin-top: 4px;
+    label {
+      margin: 10px 0 5px;
     }
-    form button {
-      background-color: #0077cc;
+    input, textarea {
+      padding: 10px;
+      font-size: 1em;
+    }
+    button {
+      margin-top: 15px;
+      padding: 10px;
+      font-size: 1em;
+      background-color: #007bff;
       color: white;
       border: none;
       cursor: pointer;
     }
-    form button:hover {
-      background-color: #005fa3;
+    button:hover {
+      background-color: #0056b3;
     }
     #map {
-      height: 100%;
+      width: 100%;
+      height: 600px;
     }
   </style>
 </head>
 <body>
 
-<div class="left-panel">
-  <form id="observationForm">
-    <label for="area">Area</label>
-    <input type="text" id="area" name="area" required>
+  <header>
+    <h1>Submit a Coral Observation</h1>
+  </header>
 
-    <label for="species">Species</label>
-    <input type="text" id="species" name="species" required>
+  <div class="container">
+    <div class="form-container">
+      <form id="observationForm">
+        <label for="observer">Observer Name</label>
+        <input type="text" id="observer" name="observer" required />
 
-    <label for="observer">Observer</label>
-    <input type="text" id="observer" name="observer" required>
+        <label for="area">Area</label>
+        <input type="text" id="area" name="area" required />
 
-    <label for="notes">Notes</label>
-    <textarea id="notes" name="notes" rows="4"></textarea>
+        <label for="species">Species</label>
+        <input type="text" id="species" name="species" required />
 
-    <label for="latitude">Latitude</label>
-    <input type="text" id="latitude" name="latitude" readonly required>
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" rows="4"></textarea>
 
-    <label for="longitude">Longitude</label>
-    <input type="text" id="longitude" name="longitude" readonly required>
+        <label for="lat">Latitude</label>
+        <input type="text" id="lat" name="latitude" readonly required />
 
-    <label for="photo">Upload a Photo</label>
-    <input type="file" id="photo" name="photo" accept="image/*">
+        <label for="lng">Longitude</label>
+        <input type="text" id="lng" name="longitude" readonly required />
 
-    <button type="submit">Submit Observation</button>
-  </form>
-</div>
+        <label for="photo">Photo Upload</label>
+        <input type="file" id="photo" name="photo" accept="image/*" required />
 
-<div class="right-panel">
-  <div id="map"></div>
-</div>
+        <button type="submit">Submit Observation</button>
+      </form>
+    </div>
+    <div class="map-container">
+      <div id="map"></div>
+    </div>
+  </div>
 
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script>
-  // Initialize map
-  const map = L.map('map').setView([-33.85, 151.2], 10);
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([-33.85, 151.2], 10);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-  let marker;
-  map.on('click', function(e) {
-    const lat = e.latlng.lat.toFixed(6);
-    const lng = e.latlng.lng.toFixed(6);
-    document.getElementById('latitude').value = lat;
-    document.getElementById('longitude').value = lng;
+    let marker;
+    map.on('click', function(e) {
+      const lat = e.latlng.lat.toFixed(6);
+      const lng = e.latlng.lng.toFixed(6);
+      document.getElementById('lat').value = lat;
+      document.getElementById('lng').value = lng;
 
-    if (marker) {
-      marker.setLatLng(e.latlng);
-    } else {
-      marker = L.marker(e.latlng).addTo(map);
-    }
-  });
+      if (marker) {
+        marker.setLatLng(e.latlng);
+      } else {
+        marker = L.marker(e.latlng).addTo(map);
+      }
+    });
 
-  // Submit handler
-  document.getElementById('observationForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+    document.getElementById('observationForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const form = e.target;
+      const photo = document.getElementById("photo").files[0];
+      const formData = new FormData(form);
+      formData.append("photo", photo);
 
-    const area = document.getElementById('area').value;
-    const species = document.getElementById('species').value;
-    const observer = document.getElementById('observer').value;
-    const notes = document.getElementById('notes').value;
-    const latitude = document.getElementById('latitude').value;
-    const longitude = document.getElementById('longitude').value;
-    const photoFile = document.getElementById('photo').files[0];
-
-    const reader = new FileReader();
-    reader.onload = function() {
-      const base64 = reader.result.split(',')[1];
-      const payload = {
-        area,
-        species,
-        observer,
-        notes,
-        latitude,
-        longitude,
-        photoName: photoFile ? photoFile.name : null,
-        photoBase64: photoFile ? base64 : null
-      };
-
-      fetch('https://script.google.com/macros/s/AKfycbyvkqyjtDKpqz3nGjs58pEJ9gCoP0cwtIE16PgI3nK1hI6O4hDNs7NHu6TnesUdPI6bpg/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          alert('✅ Observation submitted! Observation ID: ' + data.id);
-          document.getElementById('observationForm').reset();
-          if (marker) map.removeLayer(marker);
-        } else {
-          alert('❌ Error: ' + data.error);
-        }
-      })
-      .catch(error => {
-        alert('❌ Network error: ' + error.message);
+      const res = await fetch("YOUR_DEPLOYED_WEB_APP_URL", {
+        method: "POST",
+        body: formData
       });
-    };
 
-    if (photoFile) {
-      reader.readAsDataURL(photoFile);
-    } else {
-      reader.onload();
-    }
-  });
-</script>
+      if (res.ok) {
+        alert("✅ Observation submitted!");
+        form.reset();
+        if (marker) map.removeLayer(marker);
+      } else {
+        alert("❌ Submission failed.");
+      }
+    });
+  </script>
 
 </body>
 </html>
