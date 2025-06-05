@@ -1,131 +1,102 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Submit a Coral Observation</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-    }
-    .container {
-      display: flex;
-      flex-direction: row;
-      height: 100vh;
-    }
-    .form-section {
-      width: 50%;
-      padding: 20px;
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
-    .form-section form {
-      display: flex;
-      flex-direction: column;
-    }
-    label {
-      margin-top: 10px;
-    }
-    input, textarea, button {
-      padding: 8px;
-      margin-top: 4px;
-      box-sizing: border-box;
-    }
-    button {
-      background-color: #28a745;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    button:hover {
-      background-color: #218838;
-    }
-    #map {
-      width: 50%;
-      height: 100vh;
-    }
-  </style>
-</head>
-<body>
+<!DOCTYPE HTML>
+<!--
+	Spatial by TEMPLATED
+	templated.co @templatedco
+	Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+--><html><head><title>Spatial by TEMPLATED</title><meta charset="utf-8"><meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="stylesheet" href="assets/css/main.css"></head><body class="landing">
 
-<div class="container">
-  <div class="form-section">
-    <form id="observationForm">
-      <label for="area">Area</label>
-      <input type="text" id="area" name="data[area]" required>
+		<!-- Header -->
+			<header id="header" class="alt"><h1><strong><a href="index.html">Spatial</a></strong> by Templated</h1>
+				<nav id="nav"><ul><li><a href="index.html">Home</a></li>
+						<li><a href="generic.html">Generic</a></li>
+						<li><a href="elements.html">Elements</a></li>
+					</ul></nav></header><a href="#menu" class="navPanelToggle"><span class="fa fa-bars"></span></a>
 
-      <label for="species">Species Observed</label>
-      <input type="text" id="species" name="data[species]">
+		<!-- Banner -->
+			<section id="banner"><h2>Spatial</h2>
+				<p>Lorem ipsum dolor sit amet nullam consequat <br> interdum vivamus donce sed libero.</p>
+				<ul class="actions"><li><a href="#" class="button special big">Get Started</a></li>
+				</ul></section><!-- One --><section id="one" class="wrapper style1"><div class="container 75%">
+						<div class="row 200%">
+							<div class="6u 12u$(medium)">
+								<header class="major"><h2>Maecenas luctus lectus</h2>
+									<p>Perspiciatis doloremque recusandae dolor</p>
+								</header></div>
+							<div class="6u$ 12u$(medium)">
+								<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non ea mollitia corporis id, distinctio sunt veritatis officiis dolore reprehenderit deleniti voluptatibus harum magna, doloremque alias quisquam minus, eaque. Feugiat quod, nesciunt! Iste quos ipsam, iusto sit esse.</p>
+								<p>Dolorum aspernatur maxime libero ratione quidem distinctio, placeat fugiat laborum voluptatum enim neque soluta vel sunt id ex veritatis. Labore rerum, odit sapiente, alias mollitia magnam exercitationem modi amet earum quia atque ipsum voluptas asperiores quas laboriosam.</p>
+							</div>
+						</div>
+					</div>
+				</section><!-- Two --><section id="two" class="wrapper style2 special"><div class="container">
+						<header class="major"><h2>Fusce ultrices fringilla</h2>
+							<p>Maecenas vitae tellus feugiat eleifend</p>
+						</header><div class="row 150%">
+							<div class="6u 12u$(xsmall)">
+								<div class="image fit captioned">
+									<img src="images/pic02.jpg" alt="" width="575" height="390"><h3>Lorem ipsum dolor sit amet.</h3>
+								</div>
+							</div>
+							<div class="6u$ 12u$(xsmall)">
+								<div class="image fit captioned">
+									<img src="images/pic03.jpg" alt="" width="573" height="390"><h3>Illum, maiores tempora cupid?</h3>
+								</div>
+							</div>
+						</div>
+						<ul class="actions"><li><a href="#" class="button special big">Nulla luctus</a></li>
+							<li><a href="#" class="button big">Sed vulputate</a></li>
+						</ul></div>
+				</section><!-- Three --><section id="three" class="wrapper style1"><div class="container">
+						<header class="major special"><h2>Mauris vulputate dolor</h2>
+							<p>Feugiat sed lorem ipsum magna</p>
+						</header><div class="feature-grid">
+							<div class="feature">
+								<div class="image rounded"><img src="images/pic04.jpg" alt="" width="169" height="169"></div>
+								<div class="content">
+									<header><h4>Lorem ipsum</h4>
+										<p>Lorem ipsum dolor sit</p>
+									</header><p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore esse tenetur accusantium porro omnis, unde mollitia totam sit nesciunt consectetur.</p>
+								</div>
+							</div>
+							<div class="feature">
+								<div class="image rounded"><img src="images/pic05.jpg" alt="" width="169" height="169"></div>
+								<div class="content">
+									<header><h4>Recusandae nemo</h4>
+										<p>Ratione maiores a, commodi</p>
+									</header><p>Animi mollitia optio culpa expedita. Dolorem alias minima culpa repellat. Dolores, fuga maiores ut obcaecati blanditiis, at aperiam doloremque.</p>
+								</div>
+							</div>
+							<div class="feature">
+								<div class="image rounded"><img src="images/pic06.jpg" alt="" width="169" height="169"></div>
+								<div class="content">
+									<header><h4>Laudantium fugit</h4>
+										<p>Possimus ex reprehenderit eaque</p>
+									</header><p>Maiores iusto inventore fugit architecto est iste expedita commodi sed, quasi feugiat nam neque mollitia vitae omnis, ea natus facere.</p>
+								</div>
+							</div>
+							<div class="feature">
+								<div class="image rounded"><img src="images/pic07.jpg" alt="" width="169" height="169"></div>
+								<div class="content">
+									<header><h4>Porro aliquam</h4>
+										<p>Quaerat, excepturi eveniet laboriosam</p>
+									</header><p>Vitae earum unde, autem labore voluptas ex, iste dolorum inventore natus consequatur iure similique obcaecati aut corporis hic in! Porro sed.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section><!-- Four --><section id="four" class="wrapper style3 special"><div class="container">
+						<header class="major"><h2>Aenean elementum ligula</h2>
+							<p>Feugiat sed lorem ipsum magna</p>
+						</header><ul class="actions"><li><a href="#" class="button special big">Get in touch</a></li>
+						</ul></div>
+				</section><!-- Footer --><footer id="footer"><div class="container">
+					<ul class="icons"><li><a href="#" class="icon fa-facebook"></a></li>
+						<li><a href="#" class="icon fa-twitter"></a></li>
+						<li><a href="#" class="icon fa-instagram"></a></li>
+					</ul></div>
+			</footer><div class="copyright">
+			Site made with: <a href="https://templated.co/">Templated</a>
+		</div>
 
-      <label for="observer">Observer</label>
-      <input type="text" id="observer" name="data[observer]" required>
-
-      <label for="notes">Notes</label>
-      <textarea id="notes" name="data[notes]" rows="4"></textarea>
-
-      <label for="photo">Photo Upload</label>
-      <input type="file" id="photo" name="data[photo]">
-
-      <label for="lat">Latitude</label>
-      <input type="text" id="lat" name="data[latitude]" readonly required>
-
-      <label for="lng">Longitude</label>
-      <input type="text" id="lng" name="data[longitude]" readonly required>
-
-      <button type="submit">Submit Observation</button>
-    </form>
-  </div>
-
-  <div id="map"></div>
-</div>
-
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script>
-  // Initialize map
-  const map = L.map('map').setView([-33.85, 151.2], 10); // Sydney default
-
-  // Add base map
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
-
-  // Pin drop
-  let marker;
-  map.on('click', function(e) {
-    const lat = e.latlng.lat.toFixed(6);
-    const lng = e.latlng.lng.toFixed(6);
-    document.getElementById('lat').value = lat;
-    document.getElementById('lng').value = lng;
-
-    if (marker) {
-      marker.setLatLng(e.latlng);
-    } else {
-      marker = L.marker(e.latlng).addTo(map);
-    }
-  });
-
-  // Submit to SheetDB
-  document.getElementById('observationForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const form = e.target;
-    fetch("https://sheetdb.io/api/v1/qv8axipdm0sak", {
-      method: "POST",
-      body: new FormData(form)
-    }).then(res => {
-      if (res.ok) {
-        alert("✅ Observation submitted!");
-        form.reset();
-        if (marker) map.removeLayer(marker);
-      } else {
-        alert("❌ Submission failed.");
-      }
-    }).catch(() => alert("❌ Network error — try again later."));
-  });
-</script>
-
-</body>
-</html>
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script><script src="assets/js/skel.min.js"></script><script src="assets/js/util.js"></script><script src="assets/js/main.js"></script></body></html>
