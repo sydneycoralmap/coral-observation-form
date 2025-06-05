@@ -162,7 +162,7 @@
         formData.append("photoContentType", file?.type || "");
         formData.append("coral_observed", coralObserved);
 
-        const res = await fetch("YOUR_WEB_APP_URL_HERE", {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbwO6wrrV0KuSSQl_7B1T-V6cp6xR1A2mTdywaDYvDwhD7YjjT1MqLggRoiDJxYN5HUnbw/exec", {
           method: "POST",
           body: formData
         });
