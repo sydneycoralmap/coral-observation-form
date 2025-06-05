@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,7 +59,6 @@
 </head>
 <body>
 
-
   <div class="container">
     <div class="form-container">
       <form id="observationForm">
@@ -114,25 +112,41 @@
       }
     });
 
-    document.getElementById('observationForm').addEventListener('submit', async function(e) {
+    document.getElementById('observationForm').addEventListener('submit', function(e) {
       e.preventDefault();
+
       const form = e.target;
-      const photo = document.getElementById("photo").files[0];
-      const formData = new FormData(form);
-      formData.append("photo", photo);
+      const fileInput = document.getElementById("photo");
+      const file = fileInput.files[0];
 
-      const res = await fetch("https://script.google.com/macros/s/AKfycbw8oRHdooYzY8GWct7TUbj9wi1ClXMH2ai5f7VK6TLBue1dheO210usG2D0GuMSTGRw1w/exec", {
-        method: "POST",
-        body: formData
-      });
+      const reader = new FileReader();
+      reader.onloadend = async function () {
+        const base64String = reader.result.split(",")[1]; // remove "data:image/...;base64,"
 
-      if (res.ok) {
-        alert("✅ Observation submitted!");
-        form.reset();
-        if (marker) map.removeLayer(marker);
-      } else {
-        alert("❌ Submission failed.");
-      }
+        const formData = new FormData();
+        formData.append("observer", document.getElementById("observer").value);
+        formData.append("area", document.getElementById("area").value);
+        formData.append("species", document.getElementById("species").value);
+        formData.append("notes", document.getElementById("notes").value);
+        formData.append("latitude", document.getElementById("lat").value);
+        formData.append("longitude", document.getElementById("lng").value);
+        formData.append("photo", base64String);
+        formData.append("photoContentType", file.type);
+
+        const res = await fetch("https://script.google.com/macros/s/AKfycbw8oRHdooYzY8GWct7TUbj9wi1ClXMH2ai5f7VK6TLBue1dheO210usG2D0GuMSTGRw1w/exec", {
+          method: "POST",
+          body: formData
+        });
+
+        if (res.ok) {
+          alert("✅ Observation submitted!");
+          form.reset();
+          if (marker) map.removeLayer(marker);
+        } else {
+          alert("❌ Submission failed.");
+        }
+      };
+      reader.readAsDataURL(file); // trigger reader.onloadend
     });
   </script>
 
