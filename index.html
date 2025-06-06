@@ -80,7 +80,21 @@ button:hover {
   margin-bottom: 10px;
 }
 
-    
+   @media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .map-container {
+    order: 2;
+    margin-top: 20px;
+  }
+
+  .form-container {
+    order: 1;
+  }
+}
+ 
   </style>
 </head>
 <body>
