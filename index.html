@@ -181,7 +181,7 @@ button:hover {
         formData.append("photoContentType", file?.type || "");
         formData.append("coral_observed", coralObserved);
 
-        const res = await fetch("https://script.google.com/macros/s/AKfycbzAVFTm9IJ7Glh8L1i031cOoMcyFzgvTdCCWyylvAlNrI9YecXdwKKKpYDBIp_njyqtZg/exec", {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbwO6wrrV0KuSSQl_7B1T-V6cp6xR1A2mTdywaDYvDwhD7YjjT1MqLggRoiDJxYN5HUnbw/exec", {
           method: "POST",
           body: formData
         });
