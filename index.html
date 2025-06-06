@@ -151,7 +151,7 @@ button:hover {
         const show = this.value === 'yes';
         const details = document.getElementById("coralDetails");
         details.classList.toggle("hidden", !show);
-        document.getElementById("photo").required = show;
+        document.getElementById("photo").required = false;
         if (!show) {
           document.getElementById("species").value = "";
           document.getElementById("notes").value = "";
